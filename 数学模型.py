@@ -55,20 +55,76 @@ try :
             b=b+1
 
     elif mode == 6 :
-        from turtle import *
-        try:
+        from turtle import*
+        from math import*
+        from time import sleep
+        try :
             hideturtle()
-            a,e=100,0.99
+            penup()
+            title('I love you!')
+            speed('fast')
             fillcolor("pink")
             begin_fill()
             pensize(1.5)
-            for i in range(0,630):
-                e=e+0.01
-                r=a*(1-math.sin(e))
-                y=r*math.sin(e)
-                x=r*math.cos(e)
+            for i in range(400):
+                x=100*(1-sin(radians(i)))*cos(radians(i))
+                y=100*(1-sin(radians(i)))*sin(radians(i))
                 goto(x,y)
+                if i == 0 : pendown()
             end_fill()
+            #heart
+            tracer(0,0)
+            penup()
+            for i in range(-500,100):
+                goto(i/100-300,100+i)
+                if i==-10 :pendown()
+            sleep(1)
+            update()
+            #I
+            penup()
+            a=0.4
+            for i in range(300):
+                goto(a*50-110,1/a*50+60)
+                if i==0 :pendown()
+                a+=0.01
+            sleep(1)
+            update()
+            #l
+            penup()
+            a=-3
+            for i in range(601):
+                goto(a*30+70,sqrt(9-(a*a))*30+150)
+                if i==1 :pendown()
+                a+=0.01
+            a=3
+            for i in range(601):
+                goto(a*30+70,-1*sqrt(9-(a*a))*30+150)
+                if i==1 :pendown()
+                a-=0.01
+            sleep(1)
+            #o
+            update()
+            for i in range(0,100):
+                goto(i,abs(-2*i)+20)
+            sleep(1)
+            update()
+            a=0
+            #v
+            penup()
+            for i in range(0,360):
+                goto(-3*abs(sin(radians(i)))*30+150,i*0.7-100)
+                if i==0:pendown()
+            sleep(1)
+            update()
+            #e
+            penup()
+            for i in range(-50,50):
+                goto(i*10+300,i**3*10+50)
+                if i==-50:pendown()
+            #y
+            sleep(1)
+            update()
+            mainloop()      
         except Terminator :
             pass
 

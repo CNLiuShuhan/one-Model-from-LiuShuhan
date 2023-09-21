@@ -1,0 +1,57 @@
+from turtle import*
+setup(800,600)
+fillcolor("yellow")
+begin_fill()
+forward(174)
+left(150)
+forward(100)
+left(60)
+forward(100)
+end_fill()
+#房顶
+fillcolor("sky blue")
+begin_fill()
+setheading(0)
+forward(7)
+right(90)
+for i in range(0,2):
+    forward(100)
+    left(90)
+    forward(160)
+    left(90)
+end_fill()
+#房体
+up()
+goto(40,-40)
+down()
+fillcolor("green yellow")
+begin_fill()
+for n in range(0,4):
+    for j in range(0,4):
+        forward(15)
+        right(90)
+    left(90)
+end_fill()
+#窗户
+up()
+goto(100,-50)
+setheading(0)
+down()
+begin_fill()
+for m in range(0,2):
+    forward(30)
+    right(90)
+    forward(50)
+    right(90)
+end_fill()
+#门
+up()
+goto(108,-77)
+down()
+fillcolor("gold")
+begin_fill()
+circle(4)
+end_fill()
+#把手
+hideturtle()
+done()

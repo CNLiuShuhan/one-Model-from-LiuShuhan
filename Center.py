@@ -1,9 +1,9 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 import turtle as t
 from time import sleep
 
 def when_open():
-    global error
-    error = SystemExit
     from tkinter.messagebox import showinfo
     from tqdm import tqdm
     for i in tqdm(range(100)) : sleep(0.01)
@@ -55,7 +55,7 @@ def on_run():
         reload(t)
         path = t.textinput('Openfile',"File's name?")
         try :
-            if not (path == '' or path is None) : run_path(f'./{path}.py')
+            if not (path == '' or path is None) : run_path(f'./{path}.pyc')
             else :
                 t.bye()
                 break
@@ -87,8 +87,10 @@ def main():
         when_open()
         on_run()
         when_exit()
-    except BaseException as error:
+    except BaseException as error :
         return error
+    else :
+        return True
     finally :
         raise SystemExit
 
