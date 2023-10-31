@@ -127,100 +127,27 @@ try :
             mainloop()      
         except Terminator :
             pass
-
-    elif mode == 7 :
-        import re,math
-        from itertools import combinations, combinations_with_replacement
-        from tqdm import tqdm
-        from treelib import Tree
-        class Solver:
-            target = 24
-            ops = ['+', '-', '*', '/', '--', '//']
-            def __init__(self, precise_mode=False):
-                self.precise_mode = precise_mode
-            def solution(self, nums):
-                result = []
-                groups = self.dimensionality_reduction(self.format(nums))
-                for group in groups:
-                    for op in self.ops:
-                        exp = self.assemble(group[0], group[1], op)['exp']
-                        if self.check(exp, self.target) and exp not in result:
-                            result.append(exp)
-                return [exp + '=' + str(self.target) for exp in result]
-            def dimensionality_reduction(self, nums):
-                result = []
-                if len(nums) > 2:
-                    for group in self.group(nums, 2):
-                        for op in self.ops:
-                            new_group = [self.assemble(group[0][0], group[0][1], op)] + group[1]
-                            result+=self.dimensionality_reduction(new_group)
-                else:
-                    result = [nums]
-                return result
-            def assemble(self, exp1, exp2, op):
-                if op == '--' or op == '//':
-                        return self.assemble(exp2, exp1, op[0])
-                if op in r'*/':
-                        exp1 = self.add_parenthesis(exp1)
-                        exp2 = self.add_parenthesis(exp2)
-                if self.precise_mode:
-                        if op == '-':
-                        	exp2 = self.add_parenthesis(exp2)
-                        elif op == '/':
-                        	exp2 = self.add_parenthesis(exp2, True)
-                exp = self.convert(exp1['exp'] + op + exp2['exp'], op)
-                return {'op': op, 'exp': exp}
-            @staticmethod
-            def add_parenthesis(exp, is_necessary=False):
-                if (is_necessary and not exp['exp'].isdigit()) or exp['op'] in r'+-':
-                    result = {'exp': '(' + exp['exp'] + ')','op': exp['op']}
-                else:
-                    result = exp
-                return result
-            @staticmethod
-            def check(exp, target, precision=0.0001):
+    elif mode == 7:
+        import json,re,zlib
+        try:
+            with open(r".\result.json",'rb') as f:
+                result=json.loads(zlib.decompress(f.read()))
+        except FileNotFoundError:
+            print('请编译你的JSON文件，见"_help"')
+            raise SystemExit
+        while True:
+            key=input("哪项？格式遵循(n, n, n, n),后面的必须必前面的大。")
+            if re.match(r'[(]\d+, \d+, \d+, \d+[)]',key)!=None:
                 try:
-                    return abs(eval(exp) - target) < precision
-                except ZeroDivisionError:
-                    return False
-            @staticmethod
-            def convert(exp, op):
-                if op in r'+-':
-                    pattern = r'([\+\-]((\(.+\)|\d+)[\*\/](\(.+\)|\d+)|\d+))'
-                    exp = '+' + exp
-                else:
-                    pattern = r'([\*\/](\(.+?\)|\d+))'
-                    exp = '*' + exp
-                result = ''.join(sorted([i[0] for i in re.findall(pattern, exp)]))
-                if len(result) != len(exp):
-                    result = exp
-                return result[1:]
-            @staticmethod
-            def format(nums):
-                return [{'op': ' ', 'exp': str(num)} for num in nums]
-            @staticmethod
-            def group(exp_list, counter):
-                index_list = [i for i in range(len(exp_list))]
-                combination = list(combinations(index_list, counter))
-                for group1 in combination:
-                    group2 = list(set(index_list) - set(group1))
-                    yield [
-                            [exp_list[g1] for g1 in group1],
-                            [exp_list[g2] for g2 in group2]
-                            ]
-        times = int(input("最大数: "))
-        tree = Tree()
-        solver = Solver()
-        tree.create_node(f"1~{times}", "root")
-        for i in tqdm(combinations_with_replacement(range(1, times + 1), 4)):
-            tree.create_node(i, i, parent="root")
-            solution = solver.solution(i)
-            if not solution:
-                tree.create_node("没有解", None, parent=i)
-                continue
-            for j in solution:
-                tree.create_node(j.replace("*", "×").replace("/", "÷"), j, parent=i)
-        print(tree)
+                    if result[key] != "没有解":
+                        print(result[key],len(result[key]))
+                    else:
+                        print("没有解")
+                except KeyError:
+                    print('如检查出后面的数确实比前面的大，请拓展你的JSON文件，见"_help"')
+            else:
+                print('已退出')
+                break
 
     elif mode == 8 :
         x,y = tkinter.simpledialog.askinteger("项数选择","请问多少项？"),1
@@ -254,7 +181,61 @@ try :
             print('\n')
             hanoi(x)
         print('需要移动',str(2**x-1),'次。')
-
+    elif mode == 9:
+        from random import randint
+        from time import sleep
+        from copy import deepcopy
+        WIDTH = 60
+        HEIGHT = 20
+        nextCells = []
+        for x in range(WIDTH):
+            column = []
+            for y in range(HEIGHT):
+                if (x,y) in ((1,0),(2,1),(0,2),(1,2),(2,2)):
+                    column.append('#')
+                else:
+                    column.append(' ')
+            nextCells.append(column)
+        while True:
+            print('_'*WIDTH,flush=True)
+            currentCells = deepcopy(nextCells)
+            for y in range(HEIGHT):
+                for x in range(WIDTH):
+                    if currentCells[x][y] == '#':
+                        print('█',end='',flush=True)
+                    else :
+                        print(' ',end='',flush=True)
+                print('|')
+            for x in range(WIDTH):
+                for y in range(HEIGHT):
+                    leftCoord = (x-1)% WIDTH
+                    rightCoord = (x+1)%WIDTH
+                    aboveCoord = (y-1)%HEIGHT
+                    belowCoord = (y+1)%HEIGHT
+                    numNeighbors = 0
+                    if currentCells[rightCoord][aboveCoord] == '#':
+                        numNeighbors += 1
+                    if currentCells[x][aboveCoord] == '#':
+                        numNeighbors += 1
+                    if currentCells[leftCoord][aboveCoord] == '#':
+                        numNeighbors += 1
+                    if currentCells[leftCoord][y] == '#':
+                        numNeighbors += 1
+                    if currentCells[leftCoord][belowCoord] == '#':
+                        numNeighbors += 1
+                    if currentCells[x][belowCoord] == '#':
+                        numNeighbors += 1
+                    if currentCells[rightCoord][belowCoord] == '#':
+                        numNeighbors += 1
+                    if currentCells[rightCoord][y] == '#':
+                        numNeighbors += 1
+                    if currentCells[x][y] == '#' and (numNeighbors == 2 or numNeighbors == 3):
+                        nextCells[x][y] = '#'
+                    elif currentCells[x][y] == ' ' and numNeighbors == 3:
+                        nextCells[x][y] = '#'
+                    else :
+                        nextCells[x][y] = ' '
+            sleep(1)
     else :
         print("No this mode.")
 except TypeError :
