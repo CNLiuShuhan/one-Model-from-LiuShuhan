@@ -22,7 +22,7 @@ class Settings:
 
         # Ship settings
         self.ship_limit = 3
-        self.ship_bmp = r"D:\acer\Documents\learn-python\【随书代码】Python编程：从入门到实践（第3版）\源代码文件\chapter_14\scoring\images\ship.bmp"
+        self.ship_bmp = r".\ship.bmp"
 
         # Bullet settings
         self.bullet_width = 5
@@ -32,7 +32,7 @@ class Settings:
 
         # Alien settings
         self.fleet_drop_speed = 10
-        self.alien_bmp = r"D:\acer\Documents\learn-python\【随书代码】Python编程：从入门到实践（第3版）\源代码文件\chapter_14\scoring\images\alien.bmp"
+        self.alien_bmp = r".\alien.bmp"
 
         # How quickly the game speeds up
         self.speedup_scale = 1.1
