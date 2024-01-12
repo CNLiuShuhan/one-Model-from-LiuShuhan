@@ -1,10 +1,10 @@
-from __future__ import division
 import tkinter.simpledialog
-mode=tkinter.simpledialog.askinteger("模式选择","""该模型目前一共有八个模式，分别可以计算
-完全数、质数、从一开始的连续自然数之和、斐波那契数列、因数、表白工具，二十四点和汉诺塔
-请选择其中一个输入(1-8)：""")
-
+mode=tkinter.simpledialog.askinteger("模式选择","""该模型用于计算数学规律，目前有
+1完全数、2质数、3从一开始的连续自然数之和、4斐波那契数列、5因数、6表白工具、7二十四点、\
+8汉诺塔、9Conway生命游戏、10杨辉三角和11正方形及三角形数十一种功能，
+请选择其中一个输入(1-11)：""")
 try :
+
     if mode == 1 :
         c,b,j=tkinter.simpledialog.askinteger("范围选择","在多少以内？"),1,1
         while b < c :
@@ -27,11 +27,11 @@ try :
                 print(n,end=' ')
 
     elif mode == 3 :
-        c,a=tkinter.simpledialog.askinteger("项数选择","请问多少项？"),0
-        for j in range(1,c+1):
+        c,a=tkinter.simpledialog.askinteger("范围选择","在多少以内？"),0
+        for j in range(1,c):
             a=a+j
             print(f'第{j}项(从一加到{j})是:{a}')
-        print("END")
+        print("结束")
 
     elif mode == 4 :
         a,b,c,f = 0,1,tkinter.simpledialog.askinteger("范围选择","在多少以内？"),[]
@@ -41,8 +41,8 @@ try :
         print(f)
 
     elif mode == 5 :
-        c,b,n=tkinter.simpledialog.askinteger("项数选择","请问多少项？"),1,1
-        for j in range(1,c+1):
+        c,b,n=tkinter.simpledialog.askinteger("范围选择","在多少以内？"),1,1
+        for j in range(1,c):
             a=[]
             for i in range(1,b+1):
                 if b%i == 0 :
@@ -59,92 +59,173 @@ try :
         from math import*
         from time import sleep
         try :
+            setup(0.9,0.9)
             hideturtle()
-            penup()
             title('I love you!')
             speed('fast')
-            fillcolor("pink")
-            begin_fill()
             pensize(1.5)
-            for i in range(400):
-                x=100*(1-sin(radians(i)))*cos(radians(i))
-                y=100*(1-sin(radians(i)))*sin(radians(i))
-                goto(x,y)
+            fillcolor("pink")
+            penup()
+            begin_fill()
+            for i in range(0,380):
+                goto(100*(1-sin(radians(i)))*cos(radians(i)),
+                     100*(1-sin(radians(i)))*sin(radians(i)))
                 if i == 0 : pendown()
             end_fill()
-            #heart
             tracer(0,0)
             penup()
-            for i in range(-500,100):
-                goto(i/100-300,100+i)
-                if i==-10 :pendown()
+            for i in range(0,175):
+                goto(i/100-500,i+75)
+                if i==0 :pendown()
             sleep(1)
             update()
-            #I
             penup()
-            a=0.4
-            for i in range(300):
-                goto(a*50-110,1/a*50+60)
+            a=0.25
+            for i in range(0,300):
+                goto(a*40-350,1/a*40+50)
                 if i==0 :pendown()
                 a+=0.01
             sleep(1)
             update()
-            #l
             penup()
-            a=-3
-            for i in range(601):
-                goto(a*30+70,sqrt(9-(a*a))*30+150)
-                if i==1 :pendown()
-                a+=0.01
             a=3
-            for i in range(601):
-                goto(a*30+70,-1*sqrt(9-(a*a))*30+150)
-                if i==1 :pendown()
+            for i in range(0,600):
+                goto(a*20-175,sqrt(9-(a*a))*20+150)
+                if i==0 :pendown()
                 a-=0.01
+            a=-3
+            for i in range(0,600):
+                goto(a*20-175,-1*sqrt(9-(a*a))*20+150)
+                if i==0 :pendown()
+                a+=0.01
             sleep(1)
-            #o
             update()
-            for i in range(0,100):
-                goto(i,abs(-2*i)+20)
+            penup()
+            for i in range(-100,100):
+                goto(i*0.7-50,abs(-2*i)*0.7+50)
+                if i==-100 :pendown()
             sleep(1)
             update()
-            a=0
-            #v
             penup()
             for i in range(0,360):
-                goto(-3*abs(sin(radians(i)))*30+150,i*0.7-100)
-                if i==0:pendown()
+                goto(-3*abs(sin(radians(i)))*20+100,i/2+50)
+                if i==0 :pendown()
             sleep(1)
             update()
-            #e
             penup()
-            for i in range(-50,50):
-                goto(i*10+300,i**3*10+50)
-                if i==-50:pendown()
-            #y
+            a=-5
+            for i in range(0,100):
+                goto(a*15+250,a**3*0.8+100)
+                if i==0 :pendown()
+                a+=0.1
+            sleep(1)
+            update()
+            penup()
+            a=-3
+            for i in range(0,600):
+                goto(a*20+400,sqrt(9-(a*a))*20+150)
+                if i==0 :pendown()
+                a+=0.01
+            a=3
+            for i in range(0,600):
+                goto(a*20+400,-1*sqrt(9-(a*a))*20+150)
+                if i==0 :pendown()
+                a-=0.01
+            sleep(1)
+            update()
+            penup()
+            for i in range(-15,16):
+                goto(i*4+520,i*i*0.5+100)
+                if i==-15 :pendown()
             sleep(1)
             update()
             mainloop()      
         except Terminator :
             pass
-    elif mode == 7:
-        import json,re,zlib
-        try:
-            with open(r".\result.json",'rb') as f:
-                result=json.loads(zlib.decompress(f.read()))
-        except FileNotFoundError:
-            print('请编译你的JSON文件，见"_help"')
-            raise SystemExit
-        while True:
-            key=input("哪项？格式遵循(n, n, n, n),后面的必须必前面的大。")
-            if re.match(r'[(]\d+, \d+, \d+, \d+[)]',key)!=None:
+
+    elif mode == 7 :
+        import re
+        from itertools import combinations, combinations_with_replacement
+        from tqdm import tqdm
+        class Solver:
+            target = 24
+            ops = ['+', '-', '*', '/', '--', '//']
+            def __init__(self, precise_mode=False):
+                self.precise_mode = precise_mode
+            def solution(self, nums):
+                result = []
+                groups = self.dimensionality_reduction(self.format(nums))
+                for group in groups:
+                    for op in self.ops:
+                        exp = self.assemble(group[0], group[1], op)['exp']
+                        if self.check(exp, self.target) and exp not in result:
+                            result.append(exp)
+                return [exp + '=' + str(self.target) for exp in result]
+            def dimensionality_reduction(self, nums):
+                result = []
+                if len(nums) > 2:
+                    for group in self.group(nums, 2):
+                        for op in self.ops:
+                            new_group = [self.assemble(group[0][0], group[0][1], op)] + group[1]
+                            result+=self.dimensionality_reduction(new_group)
+                else:
+                    result = [nums]
+                return result
+            def assemble(self, exp1, exp2, op):
+                if op == '--' or op == '//':
+                    return self.assemble(exp2, exp1, op[0])
+                if op in r'*/':
+                    exp1 = self.add_parenthesis(exp1)
+                    exp2 = self.add_parenthesis(exp2)
+                if self.precise_mode:
+                    if op == '-':
+                        exp2 = self.add_parenthesis(exp2)
+                    elif op == '/':
+                        exp2 = self.add_parenthesis(exp2, True)
+                exp = self.convert(exp1['exp'] + op + exp2['exp'], op)
+                return {'op': op, 'exp': exp}
+            @staticmethod
+            def add_parenthesis(exp, is_necessary=False):
+                if (is_necessary and not exp['exp'].isdigit()) or exp['op'] in r'+-':
+                    result = {'exp': '(' + exp['exp'] + ')','op': exp['op']}
+                else:
+                    result = exp
+                return result
+            @staticmethod
+            def check(exp, target, precision=0.0001):
                 try:
-                    if result[key] != "没有解":
-                        print(result[key],len(result[key]))
+                    return abs(eval(exp) - target) < precision
+                except ZeroDivisionError:
+                    return False
+            @staticmethod
+            def convert(exp, op):
+                    if op in r'+-':
+                        pattern = r'([\+\-]((\(.+\)|\d+)[\*\/](\(.+\)|\d+)|\d+))'
+                        exp = '+' + exp
                     else:
-                        print("没有解")
-                except KeyError:
-                    print('如检查出后面的数确实比前面的大，请拓展你的JSON文件，见"_help"')
+                        pattern = r'([\*\/](\(.+?\)|\d+))'
+                        exp = '*' + exp
+                    result = ''.join(sorted([i[0] for i in re.findall(pattern, exp)]))
+                    if len(result) != len(exp):
+                        result = exp
+                    return result[1:]
+            @staticmethod
+            def format(nums):
+                return [{'op': ' ', 'exp': str(num)} for num in nums]
+            @staticmethod
+            def group(exp_list, counter):
+                index_list = [i for i in range(len(exp_list))]
+                combination = list(combinations(index_list, counter))
+                for group1 in combination:
+                    group2 = list(set(index_list) - set(group1))
+                    yield [[exp_list[g1] for g1 in group1],[exp_list[g2] for g2 in group2]]
+        solver = Solver()
+        findobj = re.compile(r'^\d+ \d+ \d+ \d+$')
+        while True:
+            key = input('请用本格式("+"替换为空格)：第一个数字+第二个数字+第三个数字+第四个数字\t：')
+            if re.match(findobj,key):
+                x = solver.solution(tuple(str(no) for no in key.split()))
+                print(x,len(x))
             else:
                 print('已退出')
                 break
@@ -181,22 +262,24 @@ try :
             print('\n')
             hanoi(x)
         print('需要移动',str(2**x-1),'次。')
+
     elif mode == 9:
         from random import randint
         from time import sleep
         from copy import deepcopy
-        WIDTH = 60
-        HEIGHT = 20
+        WIDTH = 30
+        HEIGHT = 10
         nextCells = []
+        number = tkinter.simpledialog.askinteger("项数选择","请问多少项？")
         for x in range(WIDTH):
             column = []
             for y in range(HEIGHT):
-                if (x,y) in ((1,0),(2,1),(0,2),(1,2),(2,2)):
+                if randint(0,1) == 1:
                     column.append('#')
                 else:
                     column.append(' ')
             nextCells.append(column)
-        while True:
+        for i in range(number):
             print('_'*WIDTH,flush=True)
             currentCells = deepcopy(nextCells)
             for y in range(HEIGHT):
@@ -236,7 +319,35 @@ try :
                     else :
                         nextCells[x][y] = ' '
             sleep(1)
+
+    elif mode == 10 :
+        n = tkinter.simpledialog.askinteger("项数选择","请问多少项？")
+        triangle = [[1], [1, 1]]
+        for i in range(2, n):
+            pre = triangle[i - 1]
+            cul = [1]
+            for j in range(i - 1):
+                cul.append(pre[j] + pre[j + 1])
+            cul.append(1)
+            triangle.append(cul)
+        if n < 21 :
+            for i in range(n):
+                s = "   " * (n - i - 1)
+                for j in triangle[i]:
+                    s = s + str(j).ljust(5) + " "
+                print(s)
+        else:
+            print(triangle)
+
+    elif mode == 11 :
+        n = tkinter.simpledialog.askinteger("项数选择","请问多少项？")
+        for i in range(n):
+            print(f'{int(i*(i-1)/2)}+{int(i*(i+1)/2)}={i*i}')
+
     else :
-        print("No this mode.")
-except TypeError :
-    print("Please restart and don't click cancel.")
+        if a != None or a != '' :
+            print("此模型正在开发中......")
+except Exception :
+    pass
+else :
+    input()
