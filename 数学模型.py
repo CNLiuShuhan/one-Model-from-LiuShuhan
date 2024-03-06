@@ -58,95 +58,91 @@ try :
         from turtle import*
         from math import*
         from time import sleep
-        try :
-            setup(0.9,0.9)
-            hideturtle()
-            title('I love you!')
-            speed('fast')
-            pensize(1.5)
-            fillcolor("pink")
-            penup()
-            begin_fill()
-            for i in range(0,380):
-                goto(100*(1-sin(radians(i)))*cos(radians(i)),
-                     100*(1-sin(radians(i)))*sin(radians(i)))
-                if i == 0 : pendown()
-            end_fill()
-            tracer(0,0)
-            penup()
-            for i in range(0,175):
-                goto(i/100-500,i+75)
-                if i==0 :pendown()
-            sleep(1)
-            update()
-            penup()
-            a=0.25
-            for i in range(0,300):
-                goto(a*40-350,1/a*40+50)
-                if i==0 :pendown()
-                a+=0.01
-            sleep(1)
-            update()
-            penup()
-            a=3
-            for i in range(0,600):
-                goto(a*20-175,sqrt(9-(a*a))*20+150)
-                if i==0 :pendown()
-                a-=0.01
-            a=-3
-            for i in range(0,600):
-                goto(a*20-175,-1*sqrt(9-(a*a))*20+150)
-                if i==0 :pendown()
-                a+=0.01
-            sleep(1)
-            update()
-            penup()
-            for i in range(-100,100):
-                goto(i*0.7-50,abs(-2*i)*0.7+50)
-                if i==-100 :pendown()
-            sleep(1)
-            update()
-            penup()
-            for i in range(0,360):
-                goto(-3*abs(sin(radians(i)))*20+100,i/2+50)
-                if i==0 :pendown()
-            sleep(1)
-            update()
-            penup()
-            a=-5
-            for i in range(0,100):
-                goto(a*15+250,a**3*0.8+100)
-                if i==0 :pendown()
-                a+=0.1
-            sleep(1)
-            update()
-            penup()
-            a=-3
-            for i in range(0,600):
-                goto(a*20+400,sqrt(9-(a*a))*20+150)
-                if i==0 :pendown()
-                a+=0.01
-            a=3
-            for i in range(0,600):
-                goto(a*20+400,-1*sqrt(9-(a*a))*20+150)
-                if i==0 :pendown()
-                a-=0.01
-            sleep(1)
-            update()
-            penup()
-            for i in range(-15,16):
-                goto(i*4+520,i*i*0.5+100)
-                if i==-15 :pendown()
-            sleep(1)
-            update()
-            mainloop()      
-        except Terminator :
-            pass
+        setup(0.9,0.9)
+        hideturtle()
+        title('I love you!')
+        speed('fast')
+        pensize(1.5)
+        fillcolor("pink")
+        penup()
+        begin_fill()
+        for i in range(0,380):
+            goto(100*(1-sin(radians(i)))*cos(radians(i)),
+                100*(1-sin(radians(i)))*sin(radians(i)))
+            if i == 0 : pendown()
+        end_fill()
+        tracer(0,0)
+        penup()
+        for i in range(0,160):
+            goto(i/100-500,i+80)
+            if i==0 :pendown()
+        sleep(1)
+        update()
+        penup()
+        a=0.25
+        for i in range(0,350):
+            goto(a*40-370,1/a*40+70)
+            if i==0 :pendown()
+            a+=0.01
+        sleep(1)
+        update()
+        penup()
+        a=60
+        for i in range(0,600):
+            goto(a-175,sqrt(3600-a*a)+150)
+            if i==0 :pendown()
+            a-=0.2
+        a=-60
+        for i in range(0,600):
+            goto(a-175,-sqrt(3600-a*a)+150)
+            if i==0 :pendown()
+            a+=0.2
+        sleep(1)
+        update()
+        penup()
+        for i in range(-100,100):
+            goto(i*0.6-50,abs(-2*i)*0.7+80)
+            if i==-100 :pendown()
+        sleep(1)
+        update()
+        penup()
+        for i in range(0,360):
+            goto(-3*abs(sin(radians(i)))*25+100,i/2*0.9+70)
+            if i==0 :pendown()
+        sleep(1)
+        update()
+        penup()
+        a=-5
+        for i in range(0,100):
+            goto(a*15+250,a**3*0.7+100)
+            if i==0 :pendown()
+            a+=0.1
+        sleep(1)
+        update()
+        penup()
+        a=-60
+        for i in range(0,600):
+            goto(a+400,sqrt(3600-a*a)+150)
+            if i==0 :pendown()
+            a+=0.2
+        a=60
+        for i in range(0,600):
+            goto(a+400,-1*sqrt(3600-a*a)+150)
+            if i==0 :pendown()
+            a-=0.2
+        sleep(1)
+        update()
+        penup()
+        for i in range(-15,16):
+            goto(i*4+520,i*i*0.5+100)
+            if i==-15 :pendown()
+        sleep(1)
+        update()
+        mainloop()      
 
     elif mode == 7 :
         import re
         from itertools import combinations, combinations_with_replacement
-        from tqdm import tqdm
         class Solver:
             target = 24
             ops = ['+', '-', '*', '/', '--', '//']
@@ -345,9 +341,9 @@ try :
             print(f'{int(i*(i-1)/2)}+{int(i*(i+1)/2)}={i*i}')
 
     else :
-        if a != None or a != '' :
+        if mode != None or mode != '' :
             print("此模型正在开发中......")
-except Exception :
-    pass
+except Exception as error:
+    raise error
 else :
     input()
