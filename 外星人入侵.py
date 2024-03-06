@@ -1,6 +1,5 @@
 import pygame
 import pygame.font
-from time import sleep
 from pygame.sprite import Sprite
 from pygame.sprite import Group
 
@@ -15,14 +14,13 @@ class Settings:
         self.screen_height = 600
         self.bg_color = (230, 230, 230)
 
-        # Windows settings
-        self.fps = 30
-        self.fps_list_limit = 1000
+        # Video settings
+        self.fps = 60
         self.fullscreen = True
 
         # Ship settings
         self.ship_limit = 3
-        self.ship_bmp = r".\ship.bmp"
+        self.ship_bmp = r"C:\Users\acer\OneDrive\Documents\learn-python\【随书代码】Python编程：从入门到实践（第3版）\chapter_14\scoring\images\ship.bmp"
 
         # Bullet settings
         self.bullet_width = 5
@@ -32,7 +30,7 @@ class Settings:
 
         # Alien settings
         self.fleet_drop_speed = 10
-        self.alien_bmp = r".\alien.bmp"
+        self.alien_bmp = r"C:\Users\acer\OneDrive\Documents\learn-python\【随书代码】Python编程：从入门到实践（第3版）\chapter_14\scoring\images\alien.bmp"
 
         # How quickly the game speeds up
         self.speedup_scale = 1.1
@@ -78,11 +76,7 @@ class Alien(Sprite):
         self.rect = self.image.get_rect()
 
         # Start each new alien near the top left of the screen.
-        self.rect.x = self.rect.width
         self.rect.y = self.rect.height
-
-        # Store the alien's exact horizontal position.
-        self.x = float(self.rect.x)
 
     def check_edges(self):
         """Return True if alien is at edge of screen."""
@@ -91,8 +85,8 @@ class Alien(Sprite):
 
     def update(self):
         """Move the alien right or left."""
-        self.x += self.settings.alien_speed * self.settings.fleet_direction
-        self.rect.x = self.x
+        exactx = self.settings.alien_speed * self.settings.fleet_direction
+        self.rect.x += exactx
 
 
 class Bullet(Sprite):
@@ -106,19 +100,14 @@ class Bullet(Sprite):
         self.color = self.settings.bullet_color
 
         # Create a bullet rect at (0, 0) and then set correct position.
-        self.rect = pygame.Rect(0, 0, self.settings.bullet_width,
-            self.settings.bullet_height)
+        self.rect = pygame.Rect(0, 0, self.settings.bullet_width, self.settings.bullet_height)
         self.rect.midtop = ai_game.ship.rect.midtop
-
-        # Store the bullet's position as a float.
-        self.y = float(self.rect.y)
 
     def update(self):
         """Move the bullet up the screen."""
         # Update the exact position of the bullet.
-        self.y -= self.settings.bullet_speed
         # Update the rect position.
-        self.rect.y = self.y
+        self.rect.y -= self.settings.bullet_speed
 
     def draw_bullet(self):
         """Draw the bullet to the screen."""
@@ -148,8 +137,7 @@ class Button:
 
     def _prep_msg(self, msg):
         """Turn msg into a rendered image and center text on the button."""
-        self.msg_image = self.font.render(msg, True, self.text_color,
-                self.button_color)
+        self.msg_image = self.font.render(msg, True, self.text_color, self.button_color)
         self.msg_image_rect = self.msg_image.get_rect()
         self.msg_image_rect.center = self.rect.center
 
@@ -194,8 +182,9 @@ class Ship(Sprite):
             self.x += self.settings.ship_speed
         if self.moving_left and self.rect.left > 0:
             self.x -= self.settings.ship_speed
-            
+
         # Update rect object from self.x.
+        exactx = self.x - self.rect.x
         self.rect.x = self.x
 
     def blitme(self):
@@ -241,8 +230,7 @@ class Scoreboard:
         """Turn the high score into a rendered image."""
         high_score = round(self.high_score)
         high_score_str = f"{high_score:,}"
-        self.high_score_image = self.font.render(high_score_str, True,
-                self.text_color, self.settings.bg_color)
+        self.high_score_image = self.font.render(high_score_str, True, self.text_color, self.settings.bg_color)
         
         # Center the high score at the top of the screen.
         self.high_score_rect = self.high_score_image.get_rect()
@@ -252,8 +240,7 @@ class Scoreboard:
     def prep_level(self):
         """Turn the level into a rendered image."""
         level_str = str(self.level)
-        self.level_image = self.font.render(level_str, True,
-                self.text_color, self.settings.bg_color)
+        self.level_image = self.font.render(level_str, True, self.text_color, self.settings.bg_color)
 
         # Position the level below the score.
         self.level_rect = self.level_image.get_rect()
@@ -281,7 +268,15 @@ class Scoreboard:
         self.screen.blit(self.high_score_image, self.high_score_rect)
         self.screen.blit(self.level_image, self.level_rect)
         self.ships.draw(self.screen)
-    
+
+    def show_fps(self, fps):
+        """Show the frames per second timely."""
+        fps_image = self.font.render(str(fps)+'fps', True, self.text_color, self.settings.bg_color)
+        fps_rect = fps_image.get_rect()
+        fps_rect.left = 20
+        fps_rect.bottom = self.screen_rect.bottom - 20
+        self.screen.blit(fps_image, fps_rect)
+
     def reset_stats(self):
         """Initialize statistics that can change during the game."""
         self.ships_left = self.settings.ship_limit
@@ -289,11 +284,33 @@ class Scoreboard:
         self.level = 1
 
 
-class GetEvent:
-    """A class to get events."""
+class Event:
+    """A class to get events and update the screen."""
+
     def __init__(self,ai_game):
-        self.ai_game = ai_game
+        """Initialize the class."""
+        pygame.init()
+        pygame.display.init()
+        self.ai = ai_game
         self.still_run = True
+        self.clock = pygame.time.Clock()
+
+    def run_game(self):
+        """Start the main loop for the game."""
+        while self.still_run:
+            self.check_events()
+
+            if self.ai.game_active:
+                self.ai.ship.update()
+                self.ai._update_bullets()
+                self.ai._update_aliens()
+
+            self.ai._update_screen()  
+
+            self.delay()
+
+        pygame.display.quit()
+        pygame.quit()
 
     def check_events(self):
         """Respond to keypresses and mouse events."""
@@ -306,27 +323,32 @@ class GetEvent:
                 self.check_keyup_events(event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                self.ai_game._check_play_button(mouse_pos)
+                self.ai._check_play_button(mouse_pos)
 
     def check_keydown_events(self, event):
         """Respond to keypresses."""
         if event.key == pygame.K_RIGHT:
-            self.ai_game.ship.moving_right = True
+            self.ai.ship.moving_right = True
         elif event.key == pygame.K_LEFT:
-            self.ai_game.ship.moving_left = True
+            self.ai.ship.moving_left = True
         elif event.key == pygame.K_q:
             self.still_run = False
-        elif (not self.ai_game.game_active) and event.key == pygame.K_p:
-            self.ai_game._start_game()
+        elif (not self.ai.game_active) and event.key == pygame.K_p:
+            self.ai._start_game()
         elif event.key == pygame.K_SPACE:
-            self.ai_game._fire_bullet()
+            self.ai._fire_bullet()
 
     def check_keyup_events(self, event):
         """Respond to key releases."""
         if event.key == pygame.K_RIGHT:
-            self.ai_game.ship.moving_right = False
+            self.ai.ship.moving_right = False
         elif event.key == pygame.K_LEFT:
-            self.ai_game.ship.moving_left = False
+            self.ai.ship.moving_left = False
+
+    def delay(self):
+        """Get the fps timely and show it."""
+        pygame.display.flip()
+        self.ai.sb.show_fps(self.clock.tick(self.ai.settings.fps))
 
 
 class AlienInvasion:
@@ -334,9 +356,7 @@ class AlienInvasion:
 
     def __init__(self):
         """Initialize the game, and create game resources."""
-        pygame.init()
-        self.event = GetEvent(self)
-        self.clock = pygame.time.Clock()
+        self.event = Event(self)
         self.settings = Settings()
 
         if self.settings.fullscreen :
@@ -361,6 +381,8 @@ class AlienInvasion:
         self.sb.reset_stats()
 
         self._create_fleet()
+
+        self.event.run_game()
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
@@ -405,7 +427,7 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom < 1:
                 self.bullets.remove(bullet)
-                if self.sb.score > 0:
+                if self.sb.score >= self.settings.bullet_points:
                     self.sb.score -= self.settings.bullet_points
                     self.sb.prep_score()
 
@@ -414,8 +436,7 @@ class AlienInvasion:
     def _check_bullet_alien_collisions(self):
         """Respond to bullet-alien collisions."""
         # Remove any bullets and aliens that have collided.
-        collisions = pygame.sprite.groupcollide(
-                self.bullets, self.aliens, True, True)
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
 
         if collisions:
             for aliens in collisions.values():
@@ -449,7 +470,7 @@ class AlienInvasion:
             self.ship.center_ship()
 
             # Pause.
-            sleep(0.5)
+            pygame.time.wait(100)
         else:
             self.game_active = False
             pygame.mouse.set_visible(True)
@@ -527,25 +548,7 @@ class AlienInvasion:
         if not self.game_active:
             self.play_button.draw_button()
 
-        pygame.display.flip()
-
 
 if __name__ == '__main__':
     # Make a game instance.
     ai = AlienInvasion()
-    fps_list = []
-    #Start the main loop for the game.
-    while ai.event.still_run:
-        ai.event.check_events()
-
-        if ai.game_active:
-            ai.ship.update()
-            ai._update_bullets()
-            ai._update_aliens()
-
-        ai._update_screen()  
-
-        fps_list.append(ai.clock.tick(ai.settings.fps))
-        if len(fps_list) > ai.settings.fps_list_limit:
-            fps_list.pop(0)
-
