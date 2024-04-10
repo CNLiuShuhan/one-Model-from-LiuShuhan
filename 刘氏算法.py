@@ -1,12 +1,13 @@
 from tkinter.simpledialog import askinteger
 from sys import argv
+DEBUG = False
 try :
     if len(argv) > 1 :
         mode = int(argv[1])
-    else : mode = askinteger("模式选择","""该模型用于计算数学规律，目前有
+    else : mode = askinteger("模式选择","""这是一个数学模型，目前有
 1完全数、2质数、3从一开始的连续自然数之和、4斐波那契数列、5因数、6表白工具、7二十四点、\
-8汉诺塔、9Conway生命游戏、10杨辉三角和11正方形及三角形数十一种功能，
-请选择其中一个输入(1-11)：""")
+8汉诺塔、9Conway生命游戏、10杨辉三角和11正方形及三角形数12A*寻路十二种功能，
+请选择其中一个输入(1-12)：""")
 
     if mode == 1 :
         c,b,j = askinteger("范围选择","在多少以内？"),1,1
@@ -37,25 +38,25 @@ try :
         print("结束")
 
     elif mode == 4 :
-        a,b,c,f = 0,1,askinteger("范围选择","在多少以内？"),[]
-        while a < c:
-            f.append(a)
-            a,b=b,a+b
+        a,b,c,f = askinteger("范围选择","在多少以内？"),1,0,[]
+        while c < a:
+            f.append(c)
+            c,b=b,c+b
         print(f)
 
     elif mode == 5 :
-        c,b,n = askinteger("范围选择","在多少以内？"),1,1
-        for j in range(1,c):
-            a=[]
+        a,b,n = askinteger("范围选择","在多少以内？"),1,0
+        for j in range(1,a):
+            c=[]
             for i in range(1,b+1):
                 if b%i == 0 :
-                    a.append(i)
-            if len(a)>n:
-                print(f'{j}:{a} {len(a)}--|>')
-                n=len(a)
+                    c.append(i)
+            if len(c) > n:
+                n = len(c)
+                print(f'{j}:{c} {n}--|>')
             else:
-                print(f'{j}:{a} {len(a)}')
-            b=b+1
+                print(f'{j}:{c} {len(c)}')
+            b+=1
 
     elif mode == 6 :
         from turtle import*
@@ -225,7 +226,7 @@ try :
             if re.match(findobj,key):
                 x = solver.solution(tuple(str(no) for no in key.split()))
                 print(x,len(x))
-            else:
+            elif key == 'close' or key == 'quit' or key == 'exit':
                 print('已退出')
                 break
 
@@ -269,7 +270,7 @@ try :
         WIDTH = 30
         HEIGHT = 10
         nextCells = []
-        number = askinteger("项数选择","请问多少项？")
+        a = askinteger("项数选择","请问多少项？")
         for x in range(WIDTH):
             column = []
             for y in range(HEIGHT):
@@ -278,7 +279,7 @@ try :
                 else:
                     column.append(' ')
             nextCells.append(column)
-        for i in range(number):
+        for i in range(a):
             print('_'*WIDTH,flush=True)
             currentCells = deepcopy(nextCells)
             for y in range(HEIGHT):
@@ -343,10 +344,113 @@ try :
         for i in range(a):
             print(f'{int(i*(i-1)/2)}+{int(i*(i+1)/2)}={i*i}')
 
+    elif mode == 12 :
+        WIDTH = 10
+        HEIGHT = 10
+        START = (0,0)
+        END = (WIDTH-1 , HEIGHT-1)
+        MAZE = [[int(j) for j in (input(f'type the {i+1} rows:')[:10])] for i in range(10)]
+        MAZE[START[1]][START[0]] = 0
+        MAZE[END[1]][END[0]] = 0
+        def a_star_search(start, end):
+            open_list = []
+            close_list = []
+            open_list.append(start)
+            while len(open_list) > 0:
+                current_grid = find_min_gird(open_list)
+                open_list.remove(current_grid)
+                close_list.append(current_grid)
+                neighbors = find_neighbors(current_grid, open_list, close_list)
+                for grid in neighbors:
+                    if grid not in open_list:
+                        grid.init_grid(current_grid, end)
+                        open_list.append(grid)
+                for grid in open_list:
+                    if (grid.x == end.x) and (grid.y == end.y):
+                        return grid
+            return None
+        def find_min_gird(open_list=None):
+            if open_list is None:
+                open_list = []
+            temp_grid = open_list[0]
+            for grid in open_list:
+                if grid.f < temp_grid.f:
+                    temp_grid = grid
+            return temp_grid
+        def find_neighbors(grid, open_list=None, close_list=None):
+            if close_list is None:
+                close_list = []
+            if open_list is None:
+                open_list = []
+            grid_list = []
+            if is_valid_grid(grid.x, grid.y - 1, open_list, close_list):
+                grid_list.append(Grid(grid.x, grid.y - 1))
+            if is_valid_grid(grid.x, grid.y + 1, open_list, close_list):
+                grid_list.append(Grid(grid.x, grid.y + 1))
+            if is_valid_grid(grid.x - 1, grid.y, open_list, close_list):
+                grid_list.append(Grid(grid.x - 1, grid.y))
+            if is_valid_grid(grid.x + 1, grid.y, open_list, close_list):
+                grid_list.append(Grid(grid.x + 1, grid.y))
+            return grid_list
+        def is_valid_grid(x, y, open_list=None, close_list=None):
+            if close_list is None:
+                close_list = []
+            if open_list is None:
+                open_list = []
+            if x < 0 or x >= len(MAZE) or y < 0 or y >= len(MAZE[0]):
+                return False
+            if MAZE[x][y] == 1:
+                return False
+            if contain_grid(open_list, x, y):
+                return False
+            if contain_grid(close_list, x, y):
+                return False
+            return True
+        def contain_grid(grids, x, y):
+            for grid in grids:
+                if (grid.x == x) and (grid.y == y):
+                    return True
+            return False
+        class Grid:
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+                self.f = 0
+                self.g = 0
+                self.h = 0
+                self.parent = None
+            def init_grid(self, parent, end):
+                self.parent = parent
+                if parent is not None:
+                    self.g = parent.g + 1
+                else:
+                    self.g = 1
+                self.h = abs(self.x - end.x) + abs(self.y - end.y)
+                self.f = self.g + self.h
+        start_grid = Grid(*START)
+        end_grid = Grid(*END)
+        result_grid = a_star_search(start_grid, end_grid)
+        path = []
+        while result_grid is not None:
+            path.append(Grid(result_grid.x, result_grid.y))
+            result_grid = result_grid.parent
+        for i in range(0, len(MAZE)):
+            for j in range(0, len(MAZE[0])):
+                if contain_grid(path, i, j):
+                    print("*  ", end='')
+                else:
+                    print(str(MAZE[i][j]) + "  ", end='')
+            print()
+
     else :
         if not mode == None or mode == '' :
             print("此模型正在开发中......")
 except Exception as error:
-    pass
+    if DEBUG is True :
+        raise error
+    elif DEBUG is False:
+        pass
+    else :
+        assert False
 else :
     input()
