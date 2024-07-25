@@ -10,13 +10,13 @@ try :
 请选择其中一个输入(1-13)：""")
 
     if mode == 1 :
-        c,b,j = askinteger("范围选择","在多少以内？"),1,1
-        while b < c :
-            a = 0
+        a,b,j = askinteger("范围选择","在多少以内？"),1,1
+        while b < a :
+            c = 0
             for i in range(1,b) :
                 if b%i == 0 :
-                    a += i
-            if a == b :
+                    c += i
+            if c == b :
                 print(b,end=' ')
             j += 1
             b += j
@@ -24,7 +24,7 @@ try :
     elif mode == 2 :
         a = askinteger("范围选择","在多少以内？")
         for n in range(2, a):
-            for x in range(2, n):
+            for x in range(2, n//2+1):
                 if n % x == 0:
                     break
             else:
@@ -33,7 +33,7 @@ try :
     elif mode == 3 :
         a,c = askinteger("范围选择","在多少以内？"),0
         for j in range(1,a):
-            c=c+j
+            c += j
             print(f'第{j}项(从一加到{j})是:{c}')
         print("结束")
 
@@ -41,13 +41,13 @@ try :
         a,b,c,f = askinteger("范围选择","在多少以内？"),1,0,[]
         while c < a:
             f.append(c)
-            c,b=b,c+b
+            c,b = b,c+b
         print(f)
 
     elif mode == 5 :
         a,b,n = askinteger("范围选择","在多少以内？"),1,0
         for j in range(1,a):
-            c=[]
+            c = []
             for i in range(1,b+1):
                 if b%i == 0 :
                     c.append(i)
@@ -56,7 +56,7 @@ try :
                 print(f'{j}:{c} {n}--|>')
             else:
                 print(f'{j}:{c} {len(c)}')
-            b+=1
+            b += 1
 
     elif mode == 6 :
         from turtle import*
@@ -349,7 +349,7 @@ try :
         HEIGHT = 10
         START = (0,0)
         END = (WIDTH-1 , HEIGHT-1)
-        MAZE = [[int(j) for j in (input(f'type the {i+1} rows:')[:10])] for i in range(10)]
+        MAZE = [[int(j) for j in (input(f'第{i+1}行:')[:10])] for i in range(10)]
         MAZE[START[1]][START[0]] = 0
         MAZE[END[1]][END[0]] = 0
         def a_star_search(start, end):
@@ -457,7 +457,7 @@ try :
                 else : running -= 1
             if running < 0: running = 0
         whole_set = {1,2,3,4,5,6,7,8,9}
-        outputa = []
+        answer = []
         def check(a,/):
             rows = [set(i) for i in a]
             columns = [set(i) for i in zip(*a)]
@@ -467,7 +467,10 @@ try :
         def main(*,locala):
             while True:
                 point = check(locala)
-                if point == {}: return locala
+                if point == {}:
+                    if len(answer) < 10 :
+                        answer.append(deepcopy(locala))
+                    else : raise Exception('"Answer" is full.')
                 for i,a in point.items():
                     if len(a) == 0 : return
                     elif len(a) == 1 :
@@ -479,21 +482,16 @@ try :
                     change = choice(list(a))
                     a -= {change}
                     locala[i[1]][i[0]] = change
-                    answer = main(locala = deepcopy(locala))
-                    if not answer is None:
-                        return answer
-                    if not a: return
-        if inputa != []:
-            outputa = main(locala = deepcopy(inputa))
-            if outputa is None :
-                outputa = inputa
-                print("Sorry,the input Sudoku puzzles is wrong.")
-        print("input:")
-        for i in inputa:
-            print(i)
-        print("output:")
-        for i in outputa:
-            print(i)
+                    main(locala = deepcopy(locala))
+                    if not a : return
+        print("输入:")
+        for i in inputa : print(i)
+        try : main(locala = inputa)
+        except Exception : pass
+        if not answer : print("抱歉，数独存在问题")
+        for i,outputa in enumerate(answer,start=1):
+            print(f"输出{i}:")
+            for j in outputa : print(j)
 
     else :
         if not mode == None or mode == '' :
