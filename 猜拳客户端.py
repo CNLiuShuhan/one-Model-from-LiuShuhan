@@ -19,7 +19,7 @@ async def tcp_echo_client():
         window.destroy()
     Button(window, text="输入完成", command=on_button_click).pack()
     window.mainloop()
-    async with asyncio.timeout(3):
+    async with asyncio.timeout(2):
         reader, writer = await asyncio.open_connection(ip, port)
         message = 'Hello world!'                                 
         writer.write(message.encode())
@@ -61,6 +61,7 @@ async def tcp_echo_client():
                 reader.read(100),10)).decode().split(',')
             translate = {'win':'你输了','lose':'你赢了','same':'平局'}
             showinfo('猜拳客户端',f"{translate[status]}{(answer_2,answer_1)}")
+            print(f"{translate[status]}{(answer_2,answer_1)}")
             window = Tk()
             window.title("猜拳客户端")
             window.geometry('250x100')
