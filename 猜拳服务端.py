@@ -35,8 +35,9 @@ async def handle_echo(reader, writer):
         Button(window, text="剪刀", command=on_button_clicked_1).pack(side='left')
         Button(window, text="布", command=on_button_clicked_2).pack(side='left')
         window.mainloop()
-        answer_2,data_2 = (await asyncio.wait_for(
+        try : answer_2,data_2 = (await asyncio.wait_for(
             reader.read(100),10)).decode().split(",")
+        except : raise KeyboardInterrupt
         data_2 = int(data_2)
         match (data_1,data_2):
             case (0,0) : status = 'same'
@@ -51,6 +52,7 @@ async def handle_echo(reader, writer):
         writer.write((status+','+answer_1).encode())
         translate = {'win':'你赢了','lose':'你输了','same':'平局'}
         showinfo('猜拳服务端',f"{translate[status]}{(answer_1,answer_2)}")
+        print(f"{translate[status]}{(answer_1,answer_2)}")
         await writer.drain()
         window = Tk()
         window.title("猜拳服务端")
@@ -74,4 +76,5 @@ async def main():
     async with server:
         try : await server.serve_forever()
         except : showinfo('猜拳服务端',"停止服务")
-asyncio.run(main())
+try : asyncio.run(main())
+except : pass
