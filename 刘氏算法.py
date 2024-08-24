@@ -445,32 +445,30 @@ try :
     elif mode == 13:
         from copy import deepcopy
         from random import choice
-        running = 1
-        while running:
-            inputa = [[int(j) for j in input(f'第{i+1}行:')[:9]] for i in range(9)]
-            for j in inputa:
-                if j == []:
-                    inputa = []
-                    running = 0
-                    break
-                elif len(j) != 9 : break
-                else : running -= 1
-            if running < 0: running = 0
         whole_set = {1,2,3,4,5,6,7,8,9}
-        answer = []
+        answers = []
+        inputa = []
+        i = 1
+        while True:
+            entry = [int(j) for j in input(f'第{i}行:')[:9]]
+            if len(entry) < 9 : i -= 1
+            else : inputa.append(entry)
+            i += 1
+            if i > 9 : break
         def check(a,/):
             rows = [set(i) for i in a]
             columns = [set(i) for i in zip(*a)]
-            zones = [set([i for j in a[y:y+3] for i in j[x:x+3]]) for y in range(0,7,3) for x in range(0,7,3)]
-            return {(x,y):whole_set-(rows[y]|columns[x]|zones[x//3+y//3*3])
+            blocks = [set([i for j in a[y:y+3] for i in j[x:x+3]])
+                      for y in range(0,7,3) for x in range(0,7,3)]
+            return {(x,y):whole_set-(rows[y]|columns[x]|blocks[x//3+y//3*3])
                     for y in range(9) for x in range(9) if a[y][x] == 0}
         def main(*,locala):
             while True:
                 point = check(locala)
                 if point == {}:
-                    if len(answer) < 10 :
-                        answer.append(deepcopy(locala))
-                    else : raise Exception('"Answer" is full.')
+                    if len(answers) < 10 :
+                        answers.append(deepcopy(locala))
+                    else : raise Exception('"Answers" is full.')
                 for i,a in point.items():
                     if len(a) == 0 : return
                     elif len(a) == 1 :
@@ -484,24 +482,41 @@ try :
                     locala[i[1]][i[0]] = change
                     main(locala = deepcopy(locala))
                     if not a : return
-        print("输入:")
-        for i in inputa : print(i)
-        try : main(locala = inputa)
-        except Exception : pass
-        if not answer : print("抱歉，数独存在问题")
-        for i,outputa in enumerate(answer,start=1):
-            print(f"输出{i}:")
-            for j in outputa : print(j)
+        try:
+            rows = [i for i in inputa]
+            columns = [list(i) for i in zip(*inputa)]
+            blocks = [[i for j in inputa[y:y+3] for i in j[x:x+3]]
+                      for y in range(0,7,3) for x in range(0,7,3)]
+            for y in range(9):
+                for x in range(9):
+                    i = inputa[y][x]
+                    row = deepcopy(rows[y])
+                    row.remove(i)
+                    column = deepcopy(columns[x])
+                    column.remove(i)
+                    block = deepcopy(blocks[x//3+y//3*3])
+                    block.remove(i)
+                    if i != 0 and (i in row or i in column or i in block):
+                        raise Exception("抱歉，数独存在问题")
+            print("输入:")
+            for i in inputa : print(i)
+            try : main(locala = inputa)
+            except Exception : pass
+            if not answers : raise Exception("抱歉，数独存在问题")
+            for i,outputa in enumerate(answers,start=1):
+                print(f"输出{i}:")
+                for j in outputa : print(j)
+        except Exception as error : print(error)
 
     else :
         if not mode == None or mode == '' :
             print("此模型正在开发中......")
 except Exception as error:
-    if DEBUG is True :
+    if DEBUG is True:
         raise error
     elif DEBUG is False:
         pass
-    else :
+    else:
         assert False
 else :
     input()
