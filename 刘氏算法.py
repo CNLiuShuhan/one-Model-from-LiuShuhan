@@ -14,7 +14,7 @@ try :
         while b < a :
             c = 0
             for i in range(1,b) :
-                if b%i == 0 :
+                if b % i == 0 :
                     c += i
             if c == b :
                 print(b,end=' ')
@@ -22,13 +22,15 @@ try :
             b += j
 
     elif mode == 2 :
+        from math import sqrt
         a = askinteger("范围选择","在多少以内？")
-        for n in range(2, a):
-            for x in range(2, n//2+1):
-                if n % x == 0:
-                    break
-            else:
-                print(n,end=' ')
+        b,c,d = list(range(2,a)),2,[]
+        while c*c <= b[-1]:
+            d.append(c)
+            for i in b:
+                if i % c == 0 : b.pop(b.index(i))
+            c = b[0]
+        print(*(d+b))
 
     elif mode == 3 :
         a,c = askinteger("范围选择","在多少以内？"),0
@@ -222,11 +224,11 @@ try :
         solver = Solver()
         findobj = re.compile(r'^\d+ \d+ \d+ \d+$')
         while True:
-            key = input('请用本格式("+"替换为空格)：第一个数字+第二个数字+第三个数字+第四个数字\t：')
-            if re.match(findobj,key):
-                x = solver.solution(tuple(str(no) for no in key.split()))
+            a = input('请用本格式("+"替换为空格)：第一个数字+第二个数字+第三个数字+第四个数字\t：')
+            if re.match(findobj,a):
+                x = solver.solution(tuple(str(no) for no in a.split()))
                 print(x,len(x))
-            elif key == 'close' or key == 'quit' or key == 'exit':
+            elif a == 'close' or a == 'quit' or a == 'exit':
                 print('已退出')
                 break
 
