@@ -70,7 +70,19 @@ async def handle_echo(reader, writer):
     await writer.wait_closed()
     showinfo('猜拳服务端',"断开连接")
 async def main():
-    server = await asyncio.start_server(handle_echo, '127.0.0.1')
+    window = Tk()
+    window.title("请输入")
+    window.geometry('300x120')
+    Label(window, text="服务器的IP地址(不含端口)").pack()
+    E1 = Entry(window, show=None)
+    E1.pack()
+    def on_button_click():
+        global ip
+        ip = E1.get()
+        window.destroy()
+    Button(window, text="输入完成", command=on_button_click).pack()
+    window.mainloop()
+    server = await asyncio.start_server(handle_echo, ip)
     addrs = ', '.join(str(sock.getsockname()) for sock in server.sockets)
     showinfo('猜拳服务端',f'开始接听:{addrs}')
     async with server:
