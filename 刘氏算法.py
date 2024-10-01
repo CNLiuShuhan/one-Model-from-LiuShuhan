@@ -5,9 +5,10 @@ try :
     if len(argv) > 1 :
         mode = int(argv[1])
     else : mode = askinteger("模式选择","""这是一个数学模型，目前有
-1完全数、2质数、3从一开始的连续自然数之和、4斐波那契数列、5因数、6表白工具、7二十四点、
-8汉诺塔、9Conway生命游戏、10杨辉三角和11正方形及三角形数12A*寻路13解数独十三种功能，
-请选择其中一个输入(1-13)：""")
+1完全数、2质数、3从一开始的连续自然数之和、4斐波那契数列、5因数、6表白工具、
+7二十四点、8汉诺塔、9Conway生命游戏、10杨辉三角、11正方形及三角形数、
+12A*寻路、13解数独和14黑洞数几种功能，
+请选择其中一个输入(1-14)：""")
 
     if mode == 1 :
         a,b,j = askinteger("范围选择","在多少以内？"),1,1
@@ -72,21 +73,21 @@ try :
         fillcolor("pink")
         penup()
         begin_fill()
-        for i in range(0,380):
+        for i in range(380):
             goto(100*(1-sin(radians(i)))*cos(radians(i)),
                 100*(1-sin(radians(i)))*sin(radians(i)))
             if i == 0 : pendown()
         end_fill()
         tracer(0,0)
         penup()
-        for i in range(0,160):
+        for i in range(160):
             goto(i/100-500,i+80)
             if i==0 :pendown()
         sleep(1)
         update()
         penup()
         a=0.25
-        for i in range(0,350):
+        for i in range(350):
             goto(a*40-370,1/a*40+70)
             if i==0 :pendown()
             a+=0.01
@@ -94,54 +95,56 @@ try :
         update()
         penup()
         a=60
-        for i in range(0,600):
+        for i in range(600):
             goto(a-175,sqrt(3600-a*a)+150)
             if i==0 :pendown()
             a-=0.2
         a=-60
-        for i in range(0,600):
+        for i in range(600):
             goto(a-175,-sqrt(3600-a*a)+150)
             if i==0 :pendown()
             a+=0.2
         sleep(1)
         update()
         penup()
-        for i in range(-100,100):
-            goto(i*0.6-50,abs(-2*i)*0.7+80)
-            if i==-100 :pendown()
+        for i in range(-16,17):
+            goto(i*4-50,i*i*0.5+80)
+            if i==-16 :pendown()
         sleep(1)
         update()
         penup()
-        for i in range(0,360):
+        for i in range(360):
             goto(-3*abs(sin(radians(i)))*25+100,i/2*0.9+70)
             if i==0 :pendown()
         sleep(1)
         update()
         penup()
         a=-5
-        for i in range(0,105):
-            goto(a*15+250,a**3*0.7+100)
+        for i in range(105):
+            goto(a*15+240,a**3*0.7+100)
             if i==0 :pendown()
             a+=0.1
         sleep(1)
         update()
         penup()
         a=-60
-        for i in range(0,600):
-            goto(a+400,sqrt(3600-a*a)+150)
+        for i in range(600):
+            goto(a+390,sqrt(3600-a*a)+150)
             if i==0 :pendown()
             a+=0.2
         a=60
-        for i in range(0,600):
-            goto(a+400,-1*sqrt(3600-a*a)+150)
+        for i in range(600):
+            goto(a+390,-1*sqrt(3600-a*a)+150)
             if i==0 :pendown()
             a-=0.2
         sleep(1)
         update()
         penup()
-        for i in range(-15,16):
-            goto(i*4+520,i*i*0.5+100)
-            if i==-15 :pendown()
+        a=-1.95
+        for i in range(40):
+            goto(a*32+520,a**4*8+90)
+            if i==0 :pendown()
+            a+=0.1
         sleep(1)
         update()
         mainloop()      
@@ -509,6 +512,31 @@ try :
                 print(f"输出{i}:")
                 for j in outputa : print(j)
         except Exception as error : print(error)
+
+    elif mode == 14:
+        a = askinteger("选择","请输入一个数：")
+        c = len(str(a))-1
+        while True:
+            b = []
+            for i in str(a):
+                b.append(int(i))
+            b.sort()
+            small = b[::]
+            b.reverse()
+            d = c
+            total = 0
+            for i in small:
+                total += (10**d)*i
+                d -= 1
+            ts = total
+            total,d = 0,c
+            for i in b:
+                total += (10**d)*i
+                d -= 1
+            print(total,'-',ts,'=',total-ts)
+            if total-ts == a or total-ts == 0:
+                break
+            a = total - ts
 
     else :
         if not mode == None or mode == '' :
