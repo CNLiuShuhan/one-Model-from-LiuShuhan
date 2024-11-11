@@ -6,7 +6,7 @@ try :
         mode = int(argv[1])
     else : mode = askinteger("模式选择","""这是一个数学模型，目前有
 1完全数、2质数、3从一开始的连续自然数之和、4斐波那契数列、5因数、6表白工具、
-7二十四点、8汉诺塔、9Conway生命游戏、10杨辉三角、11正方形及三角形数、
+7二十四点、8汉诺塔、9生命游戏、10杨辉三角、11正方形及三角形数、
 12A*寻路、13解数独和14黑洞数几种功能，
 请选择其中一个输入(1-14)：""")
 
@@ -64,26 +64,24 @@ try :
     elif mode == 6 :
         from turtle import*
         from math import*
-        from time import sleep
         setup(0.9,0.9)
         hideturtle()
         title('I LOVE YOU!')
-        speed('fast')
+        speed('fastest')
         pensize(1.5)
         fillcolor("pink")
         penup()
         begin_fill()
-        for i in range(380):
+        for i in range(362):
             goto(100*(1-sin(radians(i)))*cos(radians(i)),
                 100*(1-sin(radians(i)))*sin(radians(i)))
             if i == 0 : pendown()
+        goto(100,0)
         end_fill()
-        tracer(0,0)
         penup()
         for i in range(160):
             goto(i/100-500,i+80)
             if i==0 :pendown()
-        sleep(1)
         update()
         penup()
         a=0.25
@@ -91,32 +89,28 @@ try :
             goto(a*40-370,1/a*40+70)
             if i==0 :pendown()
             a+=0.01
-        sleep(1)
         update()
         penup()
         a=60
-        for i in range(600):
+        for i in range(200):
             goto(a-175,sqrt(3600-a*a)+150)
             if i==0 :pendown()
-            a-=0.2
+            a-=0.6
         a=-60
-        for i in range(600):
+        for i in range(200):
             goto(a-175,-sqrt(3600-a*a)+150)
             if i==0 :pendown()
-            a+=0.2
-        sleep(1)
+            a+=0.6
         update()
         penup()
         for i in range(-16,17):
             goto(i*4-50,i*i*0.5+80)
             if i==-16 :pendown()
-        sleep(1)
         update()
         penup()
         for i in range(360):
             goto(-3*abs(sin(radians(i)))*25+100,i/2*0.9+70)
             if i==0 :pendown()
-        sleep(1)
         update()
         penup()
         a=-5
@@ -124,20 +118,18 @@ try :
             goto(a*15+240,a**3*0.7+100)
             if i==0 :pendown()
             a+=0.1
-        sleep(1)
         update()
         penup()
         a=-60
-        for i in range(600):
+        for i in range(200):
             goto(a+390,sqrt(3600-a*a)+150)
             if i==0 :pendown()
-            a+=0.2
+            a+=0.6
         a=60
-        for i in range(600):
+        for i in range(200):
             goto(a+390,-1*sqrt(3600-a*a)+150)
             if i==0 :pendown()
-            a-=0.2
-        sleep(1)
+            a-=0.6
         update()
         penup()
         a=-1.95
@@ -145,7 +137,6 @@ try :
             goto(a*32+520,a**4*8+90)
             if i==0 :pendown()
             a+=0.1
-        sleep(1)
         update()
         mainloop()      
 
@@ -279,17 +270,14 @@ try :
         for x in range(WIDTH):
             column = []
             for y in range(HEIGHT):
-                if randint(0,1) == 1:
-                    column.append('#')
-                else:
-                    column.append(' ')
+                column.append(randint(0,1))
             nextCells.append(column)
         for i in range(a):
             print('_'*WIDTH,flush=True)
             currentCells = deepcopy(nextCells)
             for y in range(HEIGHT):
                 for x in range(WIDTH):
-                    if currentCells[x][y] == '#':
+                    if currentCells[x][y]:
                         print('█',end='',flush=True)
                     else :
                         print(' ',end='',flush=True)
@@ -301,28 +289,28 @@ try :
                     aboveCoord = (y-1)%HEIGHT
                     belowCoord = (y+1)%HEIGHT
                     numNeighbors = 0
-                    if currentCells[rightCoord][aboveCoord] == '#':
+                    if currentCells[rightCoord][aboveCoord]:
                         numNeighbors += 1
-                    if currentCells[x][aboveCoord] == '#':
+                    if currentCells[x][aboveCoord]:
                         numNeighbors += 1
-                    if currentCells[leftCoord][aboveCoord] == '#':
+                    if currentCells[leftCoord][aboveCoord]:
                         numNeighbors += 1
-                    if currentCells[leftCoord][y] == '#':
+                    if currentCells[leftCoord][y]:
                         numNeighbors += 1
-                    if currentCells[leftCoord][belowCoord] == '#':
+                    if currentCells[leftCoord][belowCoord]:
                         numNeighbors += 1
-                    if currentCells[x][belowCoord] == '#':
+                    if currentCells[x][belowCoord]:
                         numNeighbors += 1
-                    if currentCells[rightCoord][belowCoord] == '#':
+                    if currentCells[rightCoord][belowCoord]:
                         numNeighbors += 1
-                    if currentCells[rightCoord][y] == '#':
+                    if currentCells[rightCoord][y]:
                         numNeighbors += 1
-                    if currentCells[x][y] == '#' and (numNeighbors == 2 or numNeighbors == 3):
-                        nextCells[x][y] = '#'
-                    elif currentCells[x][y] == ' ' and numNeighbors == 3:
-                        nextCells[x][y] = '#'
+                    if currentCells[x][y] and (numNeighbors == 2 or numNeighbors == 3):
+                        nextCells[x][y] = 1
+                    elif (not currentCells[x][y]) and numNeighbors == 3:
+                        nextCells[x][y] = 1
                     else :
-                        nextCells[x][y] = ' '
+                        nextCells[x][y] = 0
             sleep(1)
 
     elif mode == 10 :
