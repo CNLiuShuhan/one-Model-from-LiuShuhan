@@ -13,9 +13,6 @@ class Settings:
         self.screen_width = 1200
         self.screen_height = 600
         self.bg_color = (230, 230, 230)
-
-        # Video settings
-        self.fps = 60
         self.fullscreen = True
 
         # Ship settings
@@ -29,7 +26,7 @@ class Settings:
         self.bullets_allowed = 5
 
         # Alien settings
-        self.fleet_drop_speed = 10
+        self.fleet_drop_speed = 5
         self.alien_bmp = r"C:\Users\acer\OneDrive\Documents\learn-python\【随书代码】Python编程：从入门到实践（第3版）\chapter_14\scoring\images\alien.bmp"
 
         # How quickly the game speeds up
@@ -269,86 +266,20 @@ class Scoreboard:
         self.screen.blit(self.level_image, self.level_rect)
         self.ships.draw(self.screen)
 
-    def show_fps(self, fps):
-        """Show the frames per second timely."""
-        fps_image = self.font.render(str(fps)+'fps', True, self.text_color, self.settings.bg_color)
-        fps_rect = fps_image.get_rect()
-        fps_rect.left = 20
-        fps_rect.bottom = self.screen_rect.bottom - 20
-        self.screen.blit(fps_image, fps_rect)
-
     def reset_stats(self):
         """Initialize statistics that can change during the game."""
         self.ships_left = self.settings.ship_limit
         self.score = 0
         self.level = 1
 
-
-class Event:
-    """A class to get events and update the screen."""
-
-    def __init__(self,ai_game):
-        """Initialize the class."""
-        pygame.init()
-        pygame.display.init()
-        self.ai = ai_game
-        self.still_run = True
-        self.clock = pygame.time.Clock()
-
-    def run_game(self):
-        """Start the main loop for the game."""
-        while self.still_run:
-            self.check_events()
-
-            if self.ai.game_active:
-                self.ai.ship.update()
-                self.ai._update_bullets()
-                self.ai._update_aliens()
-
-            self.ai._update_screen()  
-
-            self.delay()
-
-        pygame.display.quit()
-        pygame.quit()
-
-    def check_events(self):
-        """Respond to keypresses and mouse events."""
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.still_run = False
-            elif event.type == pygame.KEYDOWN:
-                self.check_keydown_events(event)
-            elif event.type == pygame.KEYUP:
-                self.check_keyup_events(event)
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = pygame.mouse.get_pos()
-                self.ai._check_play_button(mouse_pos)
-
-    def check_keydown_events(self, event):
-        """Respond to keypresses."""
-        if event.key == pygame.K_RIGHT:
-            self.ai.ship.moving_right = True
-        elif event.key == pygame.K_LEFT:
-            self.ai.ship.moving_left = True
-        elif event.key == pygame.K_q:
-            self.still_run = False
-        elif (not self.ai.game_active) and event.key == pygame.K_p:
-            self.ai._start_game()
-        elif event.key == pygame.K_SPACE:
-            self.ai._fire_bullet()
-
-    def check_keyup_events(self, event):
-        """Respond to key releases."""
-        if event.key == pygame.K_RIGHT:
-            self.ai.ship.moving_right = False
-        elif event.key == pygame.K_LEFT:
-            self.ai.ship.moving_left = False
-
-    def delay(self):
-        """Get the fps timely and show it."""
-        pygame.display.flip()
-        self.ai.sb.show_fps(self.clock.tick(self.ai.settings.fps))
+    def show_fps(self, fps):
+        """Show the frames per second timely."""
+        font = pygame.font.SysFont(None, 22)
+        fps_image = font.render(str(round(fps))+'fps', True, self.text_color, self.settings.bg_color)
+        fps_rect = fps_image.get_rect()
+        fps_rect.left = 20
+        fps_rect.bottom = self.screen_rect.bottom - 20
+        self.screen.blit(fps_image, fps_rect)
 
 
 class AlienInvasion:
@@ -356,7 +287,6 @@ class AlienInvasion:
 
     def __init__(self):
         """Initialize the game, and create game resources."""
-        self.event = Event(self)
         self.settings = Settings()
 
         if self.settings.fullscreen :
@@ -381,8 +311,6 @@ class AlienInvasion:
         self.sb.reset_stats()
 
         self._create_fleet()
-
-        self.event.run_game()
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
@@ -549,6 +477,69 @@ class AlienInvasion:
             self.play_button.draw_button()
 
 
+class Event(AlienInvasion):
+    """A class to get events and update the screen."""
+
+    def __init__(self):
+        """Initialize the class."""
+        pygame.init()
+        self.still_run = True
+        self.clock = pygame.time.Clock()
+        super().__init__()
+        self.run_game()
+
+    def run_game(self):
+        """Start the main loop for the game."""
+        while self.still_run:
+            self.check_events()
+            if self.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
+            self._update_screen()
+            self.delay()
+        pygame.quit()
+
+    def check_events(self):
+        """Respond to keypresses and mouse events."""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.still_run = False
+            elif event.type == pygame.KEYDOWN:
+                self.check_keydown_events(event)
+            elif event.type == pygame.KEYUP:
+                self.check_keyup_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+
+    def check_keydown_events(self, event):
+        """Respond to keypresses."""
+        if event.key == pygame.K_RIGHT:
+            self.ship.moving_right = True
+        elif event.key == pygame.K_LEFT:
+            self.ship.moving_left = True
+        elif event.key == pygame.K_q:
+            self.still_run = False
+        elif (not self.game_active) and event.key == pygame.K_p:
+            self._start_game()
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
+
+    def check_keyup_events(self, event):
+        """Respond to key releases."""
+        if event.key == pygame.K_RIGHT:
+            self.ship.moving_right = False
+        elif event.key == pygame.K_LEFT:
+            self.ship.moving_left = False
+
+    def delay(self):
+        """Get the fps timely and show it."""
+        self.sb.show_fps(self.clock.get_fps())
+        pygame.display.flip()
+        self.clock.tick(60)
+
+
 if __name__ == '__main__':
     # Make a game instance.
-    ai = AlienInvasion()
+    Event()
